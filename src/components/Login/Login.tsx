@@ -47,7 +47,6 @@ const Login: React.FC = () => {
     try {
       if (!loginData.citizen_id.trim() || !loginData.pin.trim()) {
         if (!loginData.citizen_id.trim()) {
-          
           toast.error("ID Student is required");
         }
         if (!loginData.pin.trim()) {
@@ -55,26 +54,21 @@ const Login: React.FC = () => {
         }
         setErrorMessages({
           username: !loginData.citizen_id.trim() ? "ID Student is required" : "",
-          password: !loginData.pin.trim()
-            ? "ID Card is required"
-            : "",
+          password: !loginData.pin.trim() ? "ID Card is required" : "",
           general: "Username and password are required",
         });
         setLoading(false);
         return;
       }
-      
 
       const response = await axios.post(`${apiUrl}/auth/login`, loginData);
 
-      if (response.data && response.data.token) {
+      if (response.status === 200 && response.data && response.data.token) {
         setLoading(true);
-        const { token, accountrole } = response.data;
+        const { token, account_role } = response.data;
         localStorage.setItem("token", token);
-        localStorage.setItem("role", accountrole);
+        localStorage.setItem("role", account_role);
 
-
-        /////////// remember
         if (loginData.rememberMe && loginData.pin.trim() && loginData.citizen_id.trim()) {
           localStorage.setItem("username", loginData.pin);
           localStorage.setItem("password", loginData.citizen_id);
@@ -84,11 +78,9 @@ const Login: React.FC = () => {
         }
         toast.success("Login Success");
 
-
-        /////////////////// check role
         setTimeout(() => {
           setLoading(false);
-          if (accountrole === "admin") {
+          if (account_role === "admin") {
             navigate("/admin");
           } else {
             navigate("/user");
@@ -161,13 +153,13 @@ const Login: React.FC = () => {
           Login
         </h1>
         <div className={`input-login ${errorMessages.username ? "error" : ""}`}>
-          <label htmlFor="citizen_id" className="text-sm text-gray-600">
+          <label className="text-sm text-gray-600">
             ID Student
           </label>
           <input
             type="text"
-            name="citizen_id"
-            value={loginData.citizen_id}
+            name="pin"
+            value={loginData.pin}
             onChange={handleInputChange}
             placeholder="ID Student"
             className={`input-field ${errorMessages.username ? "error" : ""}`}
@@ -177,13 +169,13 @@ const Login: React.FC = () => {
           )}
         </div>
         <div className={`input-login login-password ${errorMessages.username ? "error" : ""}`}>
-          <label htmlFor="pin" className="text-sm text-gray-600">
+          <label className="text-sm text-gray-600">
             ID Card
           </label>
           <input
             type={showPassword ? "text" : "password"}
-            name="pin"
-            value={loginData.pin}
+            name="citizen_id"
+            value={loginData.citizen_id}
             onChange={handleInputChange}
             placeholder="ID Card"
             className={`input-field ${errorMessages.password ? "error" : ""}`}
@@ -206,7 +198,7 @@ const Login: React.FC = () => {
             defaultChecked
             style={{color: "#D0A2F7"}}
           />
-          <label htmlFor="rememberMe">Remember Me</label>
+          <label>Remember Me</label>
         </div>
         <button  onClick={handleLogin} className="login-button">
           Login

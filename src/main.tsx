@@ -1,13 +1,12 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './input.scss';
-import { GlobalStyles }  from './styles/global';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom/client';
+import { StyledEngineProvider } from '@mui/joy/styles';
 import App from './App';
 
-ReactDOM.render(
+ReactDOM.createRoot(document.querySelector("#root")!).render(
   <React.StrictMode>
-    <GlobalStyles />
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <StyledEngineProvider >
+      <App />
+    </StyledEngineProvider>
+  </React.StrictMode>
 );
