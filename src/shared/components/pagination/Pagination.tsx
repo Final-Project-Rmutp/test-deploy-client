@@ -1,5 +1,5 @@
-import React from 'react';
-import { Button, Stack, Typography } from '@mui/joy';
+import React from "react";
+import { Button, Stack, Typography, Select, Option } from "@mui/joy";
 
 interface CustomPaginationProps {
   count: number;
@@ -24,12 +24,17 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
     }
   };
 
-  const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    onRowsPerPageChange(Number(event.target.value));
+  const handleRowsPerPageChange = (value: number) => {
+    onRowsPerPageChange(value);
   };
 
   return (
-    <Stack direction="row" spacing={2} alignItems="center">
+    <Stack
+    direction={{ xs:'column',sm:'row'}}
+    spacing={{ xs: 1, sm: 2, md: 4 }}
+    alignItems="center"
+      sx={{ marginTop: 2 }}
+    >
       <Typography>
         Page {page} of {totalPages}
       </Typography>
@@ -50,13 +55,16 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
         Next
       </Button>
       <Typography>Rows per page:</Typography>
-      <select value={rowsPerPage} onChange={handleRowsPerPageChange}>
+      <Select
+        value={rowsPerPage}
+        onChange={(_, value) => handleRowsPerPageChange(value as number)}
+      >
         {[5, 10, 25].map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
+          <Option key={option} value={option}>
+            <Typography>{option}</Typography>
+          </Option>
         ))}
-      </select>
+      </Select>
     </Stack>
   );
 };

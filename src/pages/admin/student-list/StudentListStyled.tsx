@@ -38,7 +38,7 @@ export const StyledButton = styled(Button)`
   }
 `;
 
-export const HeadStudentList = styled('div')`
+export const HeadList = styled('div')`
   padding: 2rem;
   width: 100%;
   display: flex;
@@ -57,13 +57,13 @@ export const HeadStudentList = styled('div')`
 `;
 
 export const TableContainer = styled(Sheet)`
-  height: 500px;
+  height: 100%;
   border: 1px solid ${({ theme }) => theme.palette.primary.main};
   background-color: ${({ theme }) => theme.palette.main.bg};
   border-radius: 15px;  
   margin-top: 10px;
   padding: 20px;
-  overflow: auto;
+
 `;
 
 export const Theader = styled('thead')`

@@ -2,15 +2,11 @@ import React, { useState, MouseEvent, useEffect, useRef } from "react";
 import {
   Button,
   Avatar,
-  Menu,
-  MenuItem,
   Box,
   Typography,
   Stack,
-  IconButton,
   Container,
 } from "@mui/joy";
-import { Icon } from '@iconify/react';
 import { MenuItems, MenuItemLinks } from "../../../styles/global";
 import { SidebarData } from "./SidebarData";
 import "./Navbar.scss";
@@ -24,11 +20,11 @@ import {
 } from '@mui/material/styles';
 
 import { CssVarsProvider, useColorScheme } from '@mui/joy/styles';
-import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
-import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import CssBaseline from '@mui/joy/CssBaseline';
 import UserService from "../../../auth/service/UserService";
-import { CardStyle, Header, Layout, Left, Main, Sidebar } from "./NavbarStyled";
+import { CardStyle, Header, IconButtonHeader, Layout, Left, Main, MenuContainer, Sidebar ,MenuItemContainer} from "./NavbarStyled";
+import Hamburger from "./Hamburger";
+import { Icon } from '@iconify/react';
 
 interface LayoutState {
   leftOpen: boolean;
@@ -137,6 +133,7 @@ const AdminProfileSidebar: React.FC = () => {
 
     fetchUserProfile();
   }, []);
+  
   function ColorSchemeToggle() {
     const { mode, setMode } = useColorScheme();
     const [mounted, setMounted] = React.useState(false);
@@ -149,8 +146,10 @@ const AdminProfileSidebar: React.FC = () => {
       return null;
     }
 
+
+
     return (
-      <IconButton
+      <IconButtonHeader
         id="toggle-mode"
         size="lg"
         variant="soft"
@@ -158,25 +157,27 @@ const AdminProfileSidebar: React.FC = () => {
         onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}
         sx={{
           zIndex: 999,
-          borderRadius: '50%',
           boxShadow: 'sm',
+          width:"100%"
         }}
       >
-        {mode === 'light' ? <DarkModeRoundedIcon /> : <LightModeRoundedIcon />}
-      </IconButton>
+        {mode === 'light' ? <Icon icon="line-md:sunny-filled-loop-to-moon-filled-loop-transition" color="#235726" /> : <Icon icon="line-md:moon-filled-alt-to-sunny-filled-loop-transition" color="#235726" />}
+      </IconButtonHeader>
     );
   }
 
   const materialTheme = materialExtendTheme();
-
+  const handleHamburgerClick = (event: MouseEvent<HTMLDivElement>) => {
+    toggleSidebar(event)
+  };
   return (
       <MaterialCssVarsProvider theme={{ [MATERIAL_THEME_ID]: materialTheme }}>
         <CssVarsProvider theme={theme}>
           <CssBaseline />
-          <Layout id="layout">
-            <Left id="left" className={leftOpen}>
-              <div className="icon" onClick={toggleSidebar}>
-                <p><Icon icon="solar:hamburger-menu-bold-duotone" color="#9A9EEC" /></p>
+          <Layout id="layout" data-left={state.leftOpen ? 'open' : 'closed'}>
+            <Left id="left" className={state.leftOpen ? "open" : "closed"}>
+              <div className="icon" onClick={handleHamburgerClick}>
+              <Hamburger isActive={state.leftOpen} onClick={toggleSidebar} />
               </div>
               <Sidebar className={`sidebar ${leftOpen}`}
               >
@@ -192,7 +193,7 @@ const AdminProfileSidebar: React.FC = () => {
                         to={item.path}
                         onClick={() => handleTabChange(item.title)}
                       >
-                        {item.icon}
+                        <span className="size-icon">{item.icon}</span> 
                         <Typography level="h4" style={{ marginLeft: "16px" }}>{item.title}</Typography>
                       </MenuItemLinks>
                     </MenuItems>
@@ -200,7 +201,6 @@ const AdminProfileSidebar: React.FC = () => {
                 </Container>
               </Sidebar>
             </Left>
-
             <Main id="main">
               <Header className="header">
                 <div className="item-header">
@@ -225,30 +225,37 @@ const AdminProfileSidebar: React.FC = () => {
                     </Stack>
                   </Box>
                 </CardStyle>
-                <Menu
+                <MenuContainer
                   id="profile-menu"
                   anchorEl={state.anchorEl}
                   open={Boolean(state.anchorEl)}
-                  sx={{ width: 230 }}
+                  sx={{ width: 190 }}
                   ref={menuRef}
                 >
-                  <MenuItem
+                  <MenuItemContainer
                     sx={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                    }}>
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
                     <ColorSchemeToggle />
-                  </MenuItem>
-                  <MenuItem
+                  </MenuItemContainer>
+                  <MenuItemContainer
                     sx={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                    }}>
-                    <Button color="danger" variant="soft" onClick={handleLogout}>
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Button
+                      color="danger"
+                      variant="solid"
+                      fullWidth
+                      onClick={handleLogout}
+                    >
                       Logout
                     </Button>
-                  </MenuItem>
-                </Menu>
+                  </MenuItemContainer>
+                </MenuContainer>
                 </div>
               </Header>
               <div className="content">
